@@ -50,3 +50,10 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+#
+build
+*~
+mkdisk
+Src/vfs.c
+Src/DiskImg.c
+*.pyc

@@ -1,0 +1,10 @@
+[submodule "ChibiOS"]
+	path = ChibiOS
+	url = https://github.com/ChibiOS/ChibiOS.git
+	branch = stable_17.6.x
+[submodule "ChibiOS-Contrib"]
+	path = ChibiOS-Contrib
+	url = https://github.com/ChibiOS/ChibiOS-Contrib.git
+[submodule "fat16gen"]
+	path = fat16gen
+	url = https://github.com/geoffreymbrown/fat16gen.git
