@@ -55,7 +55,7 @@ static const USBDescriptor vcom_device_descriptor = {
 
 static const uint8_t vcom_configuration_descriptor_data[106] = {
   /* Configuration Descriptor.*/
-  USB_DESC_CONFIGURATION(106,           /* wTotalLength.                    */
+  USB_DESC_CONFIGURATION(98,            /* wTotalLength.                    */
                          0x03,          /* bNumInterfaces.                  */
                          0x01,          /* bConfigurationValue.             */
                          0,             /* iConfiguration.                  */
@@ -63,13 +63,6 @@ static const uint8_t vcom_configuration_descriptor_data[106] = {
                          50),           /* bMaxPower (100mA).               */
 
   // bulk usb
-
-  USB_DESC_INTERFACE_ASSOCIATION(0x00, /* bFirstInterface.                  */
-				 0x01, /* bInterfaceCount.                  */
-				 0x08, /* bFunctionClass (Mass Storage).    */
-				 0x06, /* bFunctionSubClass (SCSI)          */
-				 0x50, /* bFunctionProtocol (bot)           */
-				 0),   /* iInterface.                       */
   /* Interface Descriptor.*/
   USB_DESC_INTERFACE    (0x00,          /* bInterfaceNumber.                */
                          0x00,          /* bAlternateSetting.               */
@@ -360,13 +353,13 @@ static void usb_event(USBDriver *usbp, usbevent_t event) {
     return;
   case USB_EVENT_SUSPEND:
     chSysLockFromISR();
-
-    /* Disconnection event on suspend.*/
-    //    sduDisconnectI(&SDU1);
-
+    sduSuspendHookI(&SDU1);
     chSysUnlockFromISR();
     return;
   case USB_EVENT_WAKEUP:
+    chSysLockFromISR();
+    sduWakeupHookI(&SDU1);
+    chSysUnlockFromISR();
     return;
   case USB_EVENT_STALLED:
     return;
