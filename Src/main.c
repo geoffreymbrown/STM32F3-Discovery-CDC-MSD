@@ -98,7 +98,7 @@ int main(void) {
   // Init the mass storage device
 
   msdObjectInit(&USBMSD1);  
-  msdStart(&USBMSD1, &USBD1, pDisk /*&Disk &vdp*/, blkbuf,  &scsi_inquiry_response);
+  msdStart(&USBMSD1, &USBD1, pDisk /*&Disk &vdp*/, blkbuf,  &scsi_inquiry_response, NULL);
 
   // Reconnect USB
 
