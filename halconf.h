@@ -387,6 +387,8 @@
 /* Community drivers's includes                                              */
 /*===========================================================================*/
 
+#include "halconf_community.h"
+
 #endif /* HALCONF_H */
 
 /** @} */

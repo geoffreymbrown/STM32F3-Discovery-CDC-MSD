@@ -22,9 +22,7 @@
  * @{
  */
 
-#include "ch.h"
 #include "hal.h"
-#include "hal_usb_msd.h"
 
 #if (HAL_USE_USB_MSD == TRUE) || defined(__DOXYGEN__)
 
@@ -85,6 +83,19 @@ static const scsi_inquiry_response_t default_scsi_inquiry_response = {
     "Mass Storage",
     {'v',CH_KERNEL_MAJOR+'0','.',CH_KERNEL_MINOR+'0'}
 };
+
+/**
+ * @brief   Hardcoded default SCSI unit serial number inquiry response structure.
+ */
+static const scsi_unit_serial_number_inquiry_response_t default_scsi_unit_serial_number_inquiry_response =
+{
+    0x00,
+    0x80,
+    0x00,
+    0x08,
+    "00000000"
+};
+
 
 /*===========================================================================*/
 /* Driver local functions.                                                   */
@@ -290,10 +301,9 @@ bool msd_request_hook(USBDriver *usbp) {
       /* The device shall NAK the status stage of the device request until
        * the Bulk-Only Mass Storage Reset is complete.
        * NAK EP1 in and out */
-#ifdef STM32_OTG_H
-      usbp->otg->ie[1].DIEPCTL = DIEPCTL_SNAK;
-      usbp->otg->oe[1].DOEPCTL = DOEPCTL_SNAK;
-#endif
+      //      usbp->otg->ie[1].DIEPCTL = DIEPCTL_SNAK;
+      //      usbp->otg->oe[1].DOEPCTL = DOEPCTL_SNAK;
+
       chSysUnlockFromISR();
 
       /* response to this request using EP0 */
@@ -376,7 +386,8 @@ void msdStop(USBMassStorageDriver *msdp) {
  */
 void msdStart(USBMassStorageDriver *msdp, USBDriver *usbp,
               BaseBlockDevice *blkdev, uint8_t *blkbuf,
-              const scsi_inquiry_response_t *inquiry) {
+              const scsi_inquiry_response_t *inquiry,
+              const scsi_unit_serial_number_inquiry_response_t *serialInquiry) {
 
   osalDbgCheck((msdp != NULL) && (usbp != NULL)
               && (blkdev != NULL) && (blkbuf != NULL));
@@ -395,6 +406,12 @@ void msdStart(USBMassStorageDriver *msdp, USBDriver *usbp,
   }
   else {
     msdp->scsi_config.inquiry_response = inquiry;
+  }
+  if (NULL == serialInquiry) {
+    msdp->scsi_config.unit_serial_number_inquiry_response = &default_scsi_unit_serial_number_inquiry_response;
+  }
+  else {
+    msdp->scsi_config.unit_serial_number_inquiry_response = serialInquiry;
   }
   msdp->scsi_config.blkbuf = blkbuf;
   msdp->scsi_config.blkdev = blkdev;

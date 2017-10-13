@@ -119,7 +119,8 @@ CSRC = $(STARTUPSRC) \
        $(STREAMSSRC) \
        $(SHELLSRC) \
        $(CHIBIOS_CONTRIB)/os/various/lib_scsi.c \
-       Src/hal_usb_msd.c \
+       $(CHIBIOS_CONTRIB)/os/hal/src/hal_community.c\
+       Src/hal_usb_msd-nootg.c \
        Src/usbcfg.c \
        Src/rdisk.c \
        Src/DiskImg.c \
@@ -231,7 +232,7 @@ RULESPATH = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC
 include $(RULESPATH)/rules.mk
 
 download: build/ch.elf
-	/opt/local/bin/openocd -s /usr/local/share/openocd/scripts/ -f board/stm32f3discovery.cfg  \
+	/usr/local/bin/openocd -s /usr/local/share/openocd/scripts/ -f board/stm32f3discovery.cfg  \
 	    -c "program build/ch.elf verify reset exit"	
 
 mkdisk: mkdisk.c
